@@ -1,3 +1,3 @@
 # lissajous-poster
 
-![alt text](./images/tiled.png)
+![alt text](./images/final.png)
