@@ -2,6 +2,7 @@
 const fs = require('fs')
 const path = require('path')
 const Canvas = require('canvas')
+const tinygradient = require('tinygradient')
 
 const vector = require('./vector')
 const constants = require('./constants')
@@ -12,7 +13,7 @@ const lissajousCurve = ({x, y}) => {
   return time => {
     return {
       x: Math.cos(x * time + TAU),
-      y: Math.cos(y * time)
+      y: Math.sin(y * time)
     }
   }
 }
@@ -61,9 +62,20 @@ const translatePoints = curveData => {
     50 + (50 * curveData.jth)
   )
 
-  return curveData.points.map(point => {
+  const points = curveData.points.map(point => {
     return vector.add(vector.by(point, scale), offset)
   })
+
+  return Object.assign({}, curveData, {points})
+}
+
+const retrieveColour = (ith, jth) => {
+  const gradient = tinygradient('red', 'blue', 'green')
+  const scale = gradient.hsv(constants.dimension)
+
+  const x = Math.max(ith, jth)
+
+  return `#${scale[x].toHex()}`
 }
 
 const renderPoster = curveFamilies => {
@@ -72,14 +84,13 @@ const renderPoster = curveFamilies => {
   const canvas = Canvas.createCanvas(width, height, 'png')
   const ctx = canvas.getContext('2d')
 
-  ctx.fillStyle = 'black'
+  ctx.fillStyle = constants.colours.background
   ctx.fillRect(0, 0, width, height)
-
-  ctx.globalAlpha = 0.2;
-  ctx.strokeStyle = 'white'
+  ctx.globalAlpha = 0.8
 
   curveFamilies.forEach(curveData => {
-    const trans = translatePoints(curveData)
+    const trans = translatePoints(curveData).points
+    ctx.strokeStyle = retrieveColour(curveData.ith, curveData.jth)
 
     for (let ith = 0; ith < trans.length - 1; ++ith) {
       let from = trans[ith]
@@ -90,7 +101,7 @@ const renderPoster = curveFamilies => {
   })
 
   canvas.createPNGStream()
-    .pipe(fs.createWriteStream(path.join(__dirname, 'clock.png')))
+    .pipe(fs.createWriteStream(constants.paths.render))
 }
 
 renderPoster(curveFamily({dim: constants.dimension}))
