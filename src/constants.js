@@ -2,14 +2,20 @@
 const path = require('path')
 
 const constants = {
-  width: 1000,
-  height: 1000,
-  dimension: 25,
+  dimension: 15,
   paths: {
     render: path.join(__dirname, '../dist/render.png')
   },
   colours: {
     background: 'black'
+  },
+  tileScale: {
+    x: 20,
+    y: 20
+  },
+  border: {
+    x: 50,
+    y: 50
   }
 }
 

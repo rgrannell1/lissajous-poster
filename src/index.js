@@ -56,10 +56,12 @@ render.line = (ctx, from, to) => {
 }
 
 const translatePoints = curveData => {
-  const scale = vector.new(20, 20)
+  const {tileScale} = constants
+
+  const scale = vector.new(tileScale.x, tileScale.y)
   const offset = vector.new(
-    50 + (50 * curveData.ith),
-    50 + (50 * curveData.jth)
+    constants.border.x + (50 * curveData.ith),
+    constants.border.y + (50 * curveData.jth)
   )
 
   const points = curveData.points.map(point => {
@@ -69,17 +71,41 @@ const translatePoints = curveData => {
   return Object.assign({}, curveData, {points})
 }
 
-const retrieveColour = (ith, jth) => {
+const tileColour = (ith, jth) => {
   const gradient = tinygradient('red', 'blue', 'green')
   const scale = gradient.hsv(constants.dimension)
 
-  const x = Math.max(ith, jth)
+  return `#${scale[Math.max(ith, jth)].toHex()}`
+}
 
-  return `#${scale[x].toHex()}`
+const prepareCurveFamilies = curveFamilies => {
+  const max = {x: 0, y: 0}
+
+  const families = curveFamilies.map(curveData => {
+    const translated = translatePoints(curveData).points
+    const colour = tileColour(curveData.ith, curveData.jth)
+
+    const localMax = {}
+
+    localMax.x = translated.reduce((max, current) => Math.max(max, current.x), 0)
+    localMax.y = translated.reduce((max, current) => Math.max(max, current.y), 0)
+
+    max.x = Math.ceil(Math.max(localMax.x, max.x))
+    max.y = Math.ceil(Math.max(localMax.y, max.y))
+
+    return Object.assign({
+      colour
+    }, curveData, {points: translated})
+  })
+
+  return {families, max}
 }
 
 const renderPoster = curveFamilies => {
-  const {width, height} = constants
+  const {max, families} = prepareCurveFamilies(curveFamilies)
+
+  const width = max.x + constants.border.x
+  const height = max.y + constants.border.y
 
   const canvas = Canvas.createCanvas(width, height, 'png')
   const ctx = canvas.getContext('2d')
@@ -88,16 +114,17 @@ const renderPoster = curveFamilies => {
   ctx.fillRect(0, 0, width, height)
   ctx.globalAlpha = 0.8
 
-  curveFamilies.forEach(curveData => {
-    const trans = translatePoints(curveData).points
-    ctx.strokeStyle = retrieveColour(curveData.ith, curveData.jth)
+  families.forEach(curveFamily => {
+    const {points, colour} = curveFamily
+    ctx.strokeStyle = colour
 
-    for (let ith = 0; ith < trans.length - 1; ++ith) {
-      let from = trans[ith]
-      let to = trans[ith + 1]
+    for (let ith = 0; ith < points.length - 1; ++ith) {
+      let from = points[ith]
+      let to = points[ith + 1]
 
       render.line(ctx, from, to)
     }
+
   })
 
   canvas.createPNGStream()
