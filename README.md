@@ -4,6 +4,10 @@ This repository contains code for plotting [Lissajous curves](http://mathworld.w
 
 ![alt text](./images/final.png)
 
+## Side-Images
+
+![alt text](./images/tan-tan.png)
+
 ## License
 
 MIT License
