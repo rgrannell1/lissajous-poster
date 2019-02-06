@@ -54,6 +54,18 @@ render.line = (ctx, from, to) => {
   ctx.stroke()
 }
 
+const translatePoints = curveData => {
+  const scale = vector.new(20, 20)
+  const offset = vector.new(
+    50 + (50 * curveData.ith),
+    50 + (50 * curveData.jth)
+  )
+
+  return curveData.points.map(point => {
+    return vector.add(vector.by(point, scale), offset)
+  })
+}
+
 const renderPoster = curveFamilies => {
   const {width, height} = constants
 
@@ -63,13 +75,11 @@ const renderPoster = curveFamilies => {
   ctx.fillStyle = 'black'
   ctx.fillRect(0, 0, width, height)
 
-  curveFamilies.forEach(curveData => {
-    const trans = curveData.points.map(point => {
-      return vector.by(point, vector.new(width, height))
-    })
+  ctx.globalAlpha = 0.2;
+  ctx.strokeStyle = 'white'
 
-    ctx.globalAlpha = 0.01;
-    ctx.strokeStyle = 'white'
+  curveFamilies.forEach(curveData => {
+    const trans = translatePoints(curveData)
 
     for (let ith = 0; ith < trans.length - 1; ++ith) {
       let from = trans[ith]
@@ -83,6 +93,4 @@ const renderPoster = curveFamilies => {
     .pipe(fs.createWriteStream(path.join(__dirname, 'clock.png')))
 }
 
-const stepped = curveFamily({dim: 50})
-
-renderPoster(stepped)
+renderPoster(curveFamily({dim: constants.dimension}))
