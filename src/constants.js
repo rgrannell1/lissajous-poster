@@ -10,13 +10,14 @@ const constants = {
   colours: {
     background: 'black'
   },
+  // or 20, 50
   tileScale: {
-    x: 80,
-    y: 80
+    x: 20,
+    y: 20
   },
   border: {
-    x: 200,
-    y: 200
+    x: 50,
+    y: 50
   }
 }
 
