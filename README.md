@@ -2,7 +2,11 @@
 
 This repository contains code for plotting [Lissajous curves](http://mathworld.wolfram.com/LissajousCurve.html) (I wanted another poster)
 
-![alt text](./images/final.png)
+![alt text](./images/lissajous.png)
+
+I also implemented rose curves as an afterthought, but I think they're nicer. They look like figures by Ernst Haeckel.
+
+![alt text](./images/rose.png)
 
 ## Side-Images
 
