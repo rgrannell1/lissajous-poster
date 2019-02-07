@@ -1,4 +1,7 @@
 
+const fs = require('fs')
+const constants = require('../constants')
+
 const renderPoster = require('../index')
 
 const command = {
@@ -6,7 +9,10 @@ const command = {
 }
 
 command.task = async (_, emitter) => {
-  renderPoster()
+  const canvas = renderPoster('rose')
+
+  canvas.createPNGStream()
+    .pipe(fs.createWriteStream(constants.paths.rose))
 }
 
 

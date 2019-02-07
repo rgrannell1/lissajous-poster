@@ -1,5 +1,4 @@
 
-const fs = require('fs')
 const path = require('path')
 const Canvas = require('canvas')
 const tinygradient = require('tinygradient')
@@ -9,38 +8,70 @@ const constants = require('./constants')
 
 const TAU = 2 * Math.PI
 
-const lissajousCurve = ({x, y}) => {
+const curves = {}
+
+curves.lissajous = ({x, y}) => {
   return time => {
-    return {
-      x: Math.cos(x * time + TAU),
-      y: Math.sin(y * time)
-    }
+    return vector.new(
+      Math.cos(x * time + TAU),
+      Math.sin(y * time))
   }
 }
 
-const curveFamily = ({dim}) => {
-  const curves = []
+curves.rose = k => {
+  return time => {
+    return vector.new(
+      Math.cos(k * time) * Math.cos(time),
+      Math.cos(k * time) * Math.sin(time)
+    )
+  }
+}
+
+const curveFamilies = {}
+
+curveFamilies.lissajous = ({dim}) => {
+  const curvePoints = []
   for (let ith = 0; ith < dim; ith++) {
     for (let jth = 0; jth < dim; jth++) {
 
       let x = ith
       let y = jth
 
-      curves.push({
+      let coords = vector.new(ith, jth)
+
+      curvePoints.push({
         ith,
         jth,
-        points: curveOverTime(lissajousCurve({x, y}))
+        points: pointsAlongCurve(curves.lissajous(coords))
       })
     }
   }
-  return curves
+
+  return curvePoints
 }
 
-const curveOverTime = (curve) => {
+curveFamilies.rose = ({dim}) => {
+  const curvePoints = []
+  for (let ith = 0; ith < dim; ith++) {
+    for (let jth = 1; jth < dim; jth++) {
+      let ratio = ith / jth
+
+      curvePoints.push({
+        ith,
+        jth,
+        points: pointsAlongCurve(curves.rose(ith / jth))
+      })
+    }
+  }
+
+  return curvePoints
+}
+
+const pointsAlongCurve = (curve) => {
   const points = []
 
-  for (let time = 0; time <= TAU; time += 0.01) {
-    points.push(curve(time))
+  for (let part = 0; part <= TAU; part += 0.01) {
+    points.push(curve(part))
   }
 
   return points
@@ -80,7 +111,7 @@ const tileColour = (ith, jth) => {
 }
 
 const prepareCurveFamilies = curveFamilies => {
-  const max = {x: 0, y: 0}
+  const max = vector.new(0, 0)
 
   const families = curveFamilies.map(curveData => {
     const translated = translatePoints(curveData).points
@@ -128,12 +159,15 @@ const renderCurves = curveFamilies => {
 
   })
 
-  canvas.createPNGStream()
-    .pipe(fs.createWriteStream(constants.paths.render))
+  return canvas
 }
 
-const renderPoster = () => {
-  renderCurves(curveFamily({dim: constants.dimension}))
+const renderPoster = family => {
+  if (!curveFamilies.hasOwnProperty(family)) {
+    console.log(`"${family}" not within ${Object.keys(curveFamilies)}`)
+  }
+
+  return renderCurves(curveFamilies[family]({dim: constants.dimension}))
 }
 
 module.exports = renderPoster

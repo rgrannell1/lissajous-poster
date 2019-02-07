@@ -4,7 +4,8 @@ const path = require('path')
 const constants = {
   dimension: 15,
   paths: {
-    render: path.join(__dirname, '../dist/render.png')
+    lissajous: path.join(__dirname, '../dist/lissajous.png'),
+    rose: path.join(__dirname, '../dist/rose.png')
   },
   colours: {
     background: 'black'
