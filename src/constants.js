@@ -10,14 +10,16 @@ const constants = {
   colours: {
     background: 'black'
   },
+  // or 80, 200
   // or 20, 50
+  strokeWidth: 2,
   tileScale: {
-    x: 20,
-    y: 20
+    x: 80,
+    y: 80
   },
   border: {
-    x: 50,
-    y: 50
+    x: 200,
+    y: 200
   }
 }
 

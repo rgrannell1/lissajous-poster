@@ -87,7 +87,7 @@ render.line = (ctx, from, to) => {
   ctx.beginPath()
   ctx.moveTo(from.x, from.y)
   ctx.lineTo(to.x, to.y)
-  ctx.lineWidth = 2
+  ctx.lineWidth = constants.strokeWidth
   ctx.stroke()
 }
 
