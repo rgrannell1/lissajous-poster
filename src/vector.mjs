@@ -21,4 +21,4 @@ vector.by = (v0, v1) => {
   }
 }
 
-module.exports = vector
+export default vector

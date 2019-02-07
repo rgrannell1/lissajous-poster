@@ -1,11 +1,11 @@
 
-const fs = require('fs')
-const path = require('path')
-const Canvas = require('canvas')
-const tinygradient = require('tinygradient')
+import fs from 'fs'
+import path from 'path'
+import Canvas from 'canvas'
+import tinygradient from 'tinygradient'
 
-const vector = require('./vector')
-const constants = require('./constants')
+import vector from './vector'
+import constants from './constants'
 
 const TAU = 2 * Math.PI
 
@@ -60,8 +60,8 @@ const translatePoints = curveData => {
 
   const scale = vector.new(tileScale.x, tileScale.y)
   const offset = vector.new(
-    constants.border.x + (50 * curveData.ith),
-    constants.border.y + (50 * curveData.jth)
+    constants.border.x + (constants.border.x * curveData.ith),
+    constants.border.y + (constants.border.y * curveData.jth)
   )
 
   const points = curveData.points.map(point => {
