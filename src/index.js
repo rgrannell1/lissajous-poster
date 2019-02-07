@@ -11,18 +11,18 @@ const TAU = 2 * Math.PI
 const curves = {}
 
 curves.lissajous = ({x, y}) => {
-  return time => {
+  return t => {
     return vector.new(
-      Math.cos(x * time + TAU),
-      Math.sin(y * time))
+      Math.cos(x * t + TAU),
+      Math.sin(y * t))
   }
 }
 
 curves.rose = k => {
-  return time => {
+  return t => {
     return vector.new(
-      Math.cos(k * time) * Math.cos(time),
-      Math.cos(k * time) * Math.sin(time)
+      Math.cos(k * t) * Math.cos(t),
+      Math.cos(k * t) * Math.sin(t)
     )
   }
 }
@@ -70,7 +70,11 @@ curveFamilies.rose = ({dim}) => {
 const pointsAlongCurve = (curve) => {
   const points = []
 
-  for (let part = 0; part <= TAU; part += 0.01) {
+  // -- I have no idea what this should be for rose-curves. For
+  // -- lissajous curves its not required.
+  let upper = (16 * TAU)
+
+  for (let part = 0; part <= upper; part += 0.01) {
     points.push(curve(part))
   }
 
