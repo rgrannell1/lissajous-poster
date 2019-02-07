@@ -6,6 +6,9 @@
   "author": "rgrannell1 <r.grannell2@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@rgrannell/index": "../utils/packages/index",
+    "@rgrannell/markdown": "../utils/packages/markdown",
+    "@rgrannell/pulp": "../utils/packages/pulp",
     "canvas": "2.3.1",
     "tinygradient": "1.0.0"
   }

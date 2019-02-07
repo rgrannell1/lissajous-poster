@@ -1,11 +1,11 @@
 
-import fs from 'fs'
-import path from 'path'
-import Canvas from 'canvas'
-import tinygradient from 'tinygradient'
+const fs = require('fs')
+const path = require('path')
+const Canvas = require('canvas')
+const tinygradient = require('tinygradient')
 
-import vector from './vector'
-import constants from './constants'
+const vector = require('./vector')
+const constants = require('./constants')
 
 const TAU = 2 * Math.PI
 
@@ -102,7 +102,7 @@ const prepareCurveFamilies = curveFamilies => {
   return {families, max}
 }
 
-const renderPoster = curveFamilies => {
+const renderCurves = curveFamilies => {
   const {max, families} = prepareCurveFamilies(curveFamilies)
 
   const width = max.x + constants.border.x
@@ -132,4 +132,8 @@ const renderPoster = curveFamilies => {
     .pipe(fs.createWriteStream(constants.paths.render))
 }
 
-renderPoster(curveFamily({dim: constants.dimension}))
+const renderPoster = () => {
+  renderCurves(curveFamily({dim: constants.dimension}))
+}
+
+module.exports = renderPoster

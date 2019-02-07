@@ -1,10 +1,10 @@
 
-import path from 'path'
+const path = require('path')
 
 const constants = {
   dimension: 15,
   paths: {
-    render: path.resolve('./dist/render.png')
+    render: path.join(__dirname, '../dist/render.png')
   },
   colours: {
     background: 'black'
@@ -19,4 +19,4 @@ const constants = {
   }
 }
 
-export default constants
+module.exports = constants
